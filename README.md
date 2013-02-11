@@ -16,7 +16,7 @@ How To Get Started
 -  Next, open BTCforME.py in your favorite text editor
 -  Search for "INSERT HEXIDECIMAL PRIVATE KEY HERE"
 -  Replace it with your hexidecimal private key where the Bitcoins are stored
--  Save the file and double clich the file to run the script
+-  Save the file and double click the file to run the script
 
 Simple Hex Private Key
 ======================
