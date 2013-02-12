@@ -6,6 +6,9 @@ import string
 import json
 import os
 
+#   hex private key - note: transaction fees are applied automatically.
+hexPrivateKey = "INSERT HEXIDECIMAL PRIVATE KEY HERE"
+
 #    api instances
 twitter_search = twitter.Twitter(domain="search.twitter.com")
 
@@ -74,10 +77,18 @@ for text, userid in tweeters:
                     for char in base58:
                         sanitizeAddress = sanitizeAddress.replace(char, "")
                     if len(sanitizeAddress) == 0 and addresses.find(findString) < 0 and newAddresses.find(findString) < 0:
-                        #   Appears Valid
-                        newAddresses = newAddresses + word + " "
-                        break
+                        #   if okay by blockchain.info standards, then it's okay by my standards
+                        stringURL = "https://blockchain.info/merchant/{0}/address_balance?address=".format( hexPrivateKey )
+                        stringURL = stringURL + word
                         
+                        response = json.loads( urllib2.urlopen(stringURL).read() )
+                        
+                        #   WTFHappened???
+                        if 'balance' in response:
+                            #   Appears Valid
+                            newAddresses = newAddresses + word + " "
+                            break
+                            
 #   prepare recipients
 recipients = '{'
 satoshisPerAddress = .00000001
@@ -95,7 +106,7 @@ if len(newAddresses) > 26:
     recipients = recipients[:recipients.__len__() - 1] + '}'
     
     #   post - note: transaction fees are applied automatically.
-    stringURL = "https://blockchain.info/merchant/INSERT HEXIDECIMAL PRIVATE KEY HERE/sendmany?recipients="
+    stringURL = "https://blockchain.info/merchant/{0}/sendmany?recipients=".format( hexPrivateKey )
     response = json.loads( urllib2.urlopen(stringURL + urllib2.quote( recipients )).read() )
     
     #   WTFHappened???
